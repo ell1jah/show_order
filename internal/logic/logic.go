@@ -16,7 +16,7 @@ type orderLogic struct {
 	repo  repository.Repository
 }
 
-func NewRepository(cache repository.Cache, repo repository.Repository) Logic {
+func NewLogic(cache repository.Cache, repo repository.Repository) Logic {
 	return &orderLogic{
 		cache: cache,
 		repo:  repo,
