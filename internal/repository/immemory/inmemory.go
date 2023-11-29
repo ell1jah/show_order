@@ -8,23 +8,23 @@ import (
 	"github.com/mohae/deepcopy"
 )
 
-type orderRepository struct {
+type orderCache struct {
 	orders []model.Order
 	mu     sync.RWMutex
 }
 
-func NewRepository() repository.Repository {
-	return &orderRepository{
+func NewCache() repository.Cache {
+	return &orderCache{
 		orders: []model.Order{},
 		mu:     sync.RWMutex{},
 	}
 }
 
-func (or *orderRepository) GetByUID(uid string) (*model.Order, error) {
-	or.mu.RLock()
-	defer or.mu.RUnlock()
+func (oc *orderCache) GetByUID(uid string) (*model.Order, error) {
+	oc.mu.RLock()
+	defer oc.mu.RUnlock()
 
-	for _, order := range or.orders {
+	for _, order := range oc.orders {
 		if order.OrderUID == uid {
 			return (deepcopy.Copy(&order)).(*model.Order), nil
 		}
@@ -33,17 +33,18 @@ func (or *orderRepository) GetByUID(uid string) (*model.Order, error) {
 	return nil, model.ErrNotFound
 }
 
-func (or *orderRepository) GetAll() ([]model.Order, error) {
-	or.mu.RLock()
-	defer or.mu.RUnlock()
+func (oc *orderCache) Load(orders []model.Order) error {
+	oc.mu.Lock()
+	defer oc.mu.Unlock()
 
-	return (deepcopy.Copy(or.orders)).([]model.Order), nil
+	oc.orders = append(oc.orders, (deepcopy.Copy(orders)).([]model.Order)...)
+	return nil
 }
 
-func (or *orderRepository) Create(order *model.Order) error {
-	or.mu.Lock()
-	defer or.mu.Unlock()
+func (oc *orderCache) Create(order *model.Order) error {
+	oc.mu.Lock()
+	defer oc.mu.Unlock()
 
-	or.orders = append(or.orders, (deepcopy.Copy(*order)).(model.Order))
+	oc.orders = append(oc.orders, (deepcopy.Copy(*order)).(model.Order))
 	return nil
 }

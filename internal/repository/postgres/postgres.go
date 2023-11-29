@@ -26,18 +26,6 @@ func (or *orderRepository) Create(order *model.Order) error {
 	return nil
 }
 
-func (or *orderRepository) GetByUID(uid string) (*model.Order, error) {
-	var order *model.Order
-	err := or.db.Preload("delivery").Preload("payment").Preload("items").First(order, uid).Error
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, model.ErrNotFound
-	} else if err != nil {
-		return nil, errors.Wrap(err, "database error")
-	}
-
-	return order, err
-}
-
 func (or *orderRepository) GetAll() ([]model.Order, error) {
 	var orders []model.Order
 	err := or.db.Preload("delivery").Preload("payment").Preload("items").Find(&orders).Error
