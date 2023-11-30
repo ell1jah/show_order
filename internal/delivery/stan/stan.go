@@ -24,7 +24,7 @@ type stanManager struct {
 	cfg    *config.Config
 }
 
-func NewStanManager(logic logic.Logic, logger zap.Logger, cfg *config.Config) StanManager {
+func NewStanManager(logic logic.Logic, logger *zap.Logger, cfg *config.Config) StanManager {
 	return &stanManager{
 		logic:  logic,
 		logger: logger,

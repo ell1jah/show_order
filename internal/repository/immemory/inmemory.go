@@ -1,4 +1,4 @@
-package immemory
+package inmemory
 
 import (
 	"sync"
