@@ -23,7 +23,8 @@ type Config struct {
 		StartDeltaMin int    `yaml:"start_delta_min" env-default:"10"`
 	} `yaml:"stan"`
 	App struct {
-		Port string `yaml:"app_port" env-default:":8080"`
+		Port      string `yaml:"app_port" env-default:":8080"`
+		StaticDir string `yaml:"app_static_dir" env-default:"./static"`
 	} `yaml:"app"`
 }
 

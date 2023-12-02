@@ -7,6 +7,7 @@ RUN  go install ./cmd/main.go
 FROM alpine AS run_stage
 WORKDIR /app_binary
 COPY --from=build_stage /go/bin/main /app_binary/
+COPY --from=build_stage /go/src/app/web /app_binary/static
 RUN chmod +x main
 EXPOSE 8080/tcp
 ENTRYPOINT ./main

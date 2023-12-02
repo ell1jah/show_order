@@ -18,8 +18,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const htmlDir = "./web"
-
 func main() {
 	logger := zap.Must(zap.NewDevelopment())
 	sugaredLogger := logger.Sugar()
@@ -62,9 +60,9 @@ func main() {
 	r := mux.NewRouter()
 
 	r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, htmlDir)
+		http.ServeFile(w, r, config.App.StaticDir)
 	})
-	r.HandleFunc("/", http.FileServer(http.Dir(htmlDir)).ServeHTTP).
+	r.HandleFunc("/", http.FileServer(http.Dir(config.App.StaticDir)).ServeHTTP).
 		Methods("GET")
 	r.HandleFunc("/orders/{ORDER_UID:[0-9]+}", orderHandler.GetOrder).Methods("GET")
 
