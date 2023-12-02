@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Information</title>
+</head>
+<body>
+
+  <h1>Order Information</h1>
+
+  <form id="orderForm">
+    <label for="orderID">Enter Order ID:</label>
+    <input type="text" id="orderID" name="orderID" required>
+    <button type="button" onclick="getOrder()">Get Order</button>
+  </form>
+
+  <div id="orderDetails">
+    <!-- Order details will be displayed here -->
+  </div>
+
+  <script>
+    async function getOrder() {
+      const orderID = document.getElementById("orderID").value;
+      const url = `http://localhost:8080/orders/${orderID}`;
+
+      try {
+        const response = await fetch(url, { method: "GET" });
+        const orderData = await response.json();
+
+        // Display order details
+        displayOrderDetails(orderData);
+      } catch (error) {
+        console.error("Error fetching order:", error);
+      }
+    }
+
+    function displayOrderDetails(orderData) {
+      const orderDetailsDiv = document.getElementById("orderDetails");
+      orderDetailsDiv.innerHTML = "";
+
+      // Iterate through order data and display details
+      for (const [key, value] of Object.entries(orderData)) {
+        if (typeof value === "object") {
+          orderDetailsDiv.innerHTML += `<h2>${key}</h2>`;
+          // Display nested object properties
+          for (const [nestedKey, nestedValue] of Object.entries(value)) {
+            orderDetailsDiv.innerHTML += `<p><strong>${nestedKey}:</strong> ${nestedValue}</p>`;
+          }
+        } else {
+          orderDetailsDiv.innerHTML += `<p><strong>${key}:</strong> ${value}</p>`;
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
