@@ -2,9 +2,11 @@ package rest
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/ell1jah/show_order/internal/logic"
+	"github.com/ell1jah/show_order/internal/model"
 	"github.com/gorilla/mux"
 	"go.uber.org/zap"
 )
@@ -32,14 +34,19 @@ func (or *orderRest) GetOrder(w http.ResponseWriter, r *http.Request) {
 
 	order, err := or.logic.GetByUID(uid)
 	if err != nil {
-		or.logger.Sugar().Infof("order logic error: %w", err)
-		http.Error(w, "can`t find order", http.StatusNotFound)
+		if errors.Is(err, model.ErrNotFound) {
+			http.Error(w, "can`t find order", http.StatusNotFound)
+			return
+		}
+
+		or.logger.Sugar().Errorf("order logic error: %s", err)
+		http.Error(w, "can`t find order", http.StatusInternalServerError)
 		return
 	}
 
 	resp, err := json.Marshal(order)
 	if err != nil {
-		or.logger.Sugar().Infof("json marshal error: %w", err)
+		or.logger.Sugar().Infof("json marshal error: %s", err)
 		http.Error(w, "can`t find order", http.StatusInternalServerError)
 		return
 	}
@@ -47,7 +54,7 @@ func (or *orderRest) GetOrder(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	_, err = w.Write(resp)
 	if err != nil {
-		or.logger.Sugar().Infof("response write error: %w", err)
+		or.logger.Sugar().Infof("response write error: %s", err)
 		http.Error(w, "can`t write response", http.StatusInternalServerError)
 		return
 	}

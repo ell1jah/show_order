@@ -64,7 +64,7 @@ func main() {
 	})
 	r.HandleFunc("/", http.FileServer(http.Dir(config.App.StaticDir)).ServeHTTP).
 		Methods("GET")
-	r.HandleFunc("/orders/{ORDER_UID:[0-9]+}", orderHandler.GetOrder).Methods("GET")
+	r.HandleFunc("/orders/{ORDER_UID:[0-9a-z]+}", orderHandler.GetOrder).Methods("GET")
 
 	mux := middleware.AccessLog(sugaredLogger, r)
 	mux = middleware.Panic(sugaredLogger, mux)

@@ -16,7 +16,6 @@
   </form>
 
   <div id="orderDetails">
-    <!-- Order details will be displayed here -->
   </div>
 
   <script>
@@ -26,12 +25,17 @@
 
       try {
         const response = await fetch(url, { method: "GET" });
+
+        if (response.status === 404) {
+          throw new Error("Order not found. Please check the order ID.");
+        }
+
         const orderData = await response.json();
 
-        // Display order details
         displayOrderDetails(orderData);
       } catch (error) {
         console.error("Error fetching order:", error);
+        displayErrorMessage(error.message);
       }
     }
 
@@ -39,11 +43,9 @@
       const orderDetailsDiv = document.getElementById("orderDetails");
       orderDetailsDiv.innerHTML = "";
 
-      // Iterate through order data and display details
       for (const [key, value] of Object.entries(orderData)) {
         if (typeof value === "object") {
           orderDetailsDiv.innerHTML += `<h2>${key}</h2>`;
-          // Display nested object properties
           for (const [nestedKey, nestedValue] of Object.entries(value)) {
             orderDetailsDiv.innerHTML += `<p><strong>${nestedKey}:</strong> ${nestedValue}</p>`;
           }
@@ -51,6 +53,11 @@
           orderDetailsDiv.innerHTML += `<p><strong>${key}:</strong> ${value}</p>`;
         }
       }
+    }
+
+    function displayErrorMessage(message) {
+      const orderDetailsDiv = document.getElementById("orderDetails");
+      orderDetailsDiv.innerHTML = `<p style="color: red;">Error: ${message}</p>`;
     }
   </script>
 

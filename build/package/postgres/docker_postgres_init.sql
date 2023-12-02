@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS payment (
 );
 
 CREATE TABLE IF NOT EXISTS order (
-    order_uid          VARCHAR(255),
+    order_uid          VARCHAR(255) PRIMARY KEY,
     track_number       VARCHAR(255),
     entry              VARCHAR(255),
     locale             VARCHAR(255),
