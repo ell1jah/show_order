@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS delivery (
 CREATE TABLE IF NOT EXISTS payment (
     id      SERIAL PRIMARY KEY,
     transaction  VARCHAR(255),
-    request_id   INTEGER,
+    request_id   VARCHAR(255),
     currency     VARCHAR(10),
     provider     VARCHAR(255),
     amount       INTEGER,
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS payment (
     custom_fee    INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS order (
+CREATE TABLE IF NOT EXISTS public.order (
     order_uid          VARCHAR(255) PRIMARY KEY,
     track_number       VARCHAR(255),
     entry              VARCHAR(255),
@@ -31,24 +31,24 @@ CREATE TABLE IF NOT EXISTS order (
     internal_signature VARCHAR(255),
     customer_id        VARCHAR(255),
     delivery_service   VARCHAR(255),
-    shardkey           INTEGER,
+    shardkey           VARCHAR(255),
     sm_id              INTEGER,
     date_created       TIMESTAMP,
-    oof_shard          INTEGER,
+    oof_shard          VARCHAR(255),
     delivery_id        INTEGER REFERENCES delivery(id),
     payment_id         INTEGER REFERENCES payment(id)
 );
 
 CREATE TABLE IF NOT EXISTS item (
     id           SERIAL PRIMARY KEY,
-    order_uid    VARCHAR(255), REFERENCES order(order_uid),
+    order_uid    VARCHAR(255) REFERENCES public.order(order_uid),
     chrt_id      INTEGER,
     track_number VARCHAR(255),
     price        INTEGER,
     rid          VARCHAR(255),
     name         VARCHAR(255),
     sale         INTEGER,
-    size         INTEGER,
+    size         VARCHAR(10),
     total_price  INTEGER,
     nm_id        INTEGER,
     brand        VARCHAR(255),

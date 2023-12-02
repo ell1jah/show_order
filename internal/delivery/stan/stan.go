@@ -48,12 +48,12 @@ func (sm *stanManager) Run() error {
 			var order model.Order
 			err := json.Unmarshal(m.Data, &order)
 			if err != nil {
-				sm.logger.Error(err.Error())
+				sm.logger.Sugar().Errorf("stan unmarshal error: %s", err)
 				return
 			}
 			err = sm.logic.Create(&order)
 			if err != nil {
-				sm.logger.Error(err.Error())
+				sm.logger.Sugar().Errorf("stan logic error: %s", err)
 				return
 			}
 		}, stan.StartAtTimeDelta(time.Minute*time.Duration(sm.cfg.Stan.StartDeltaMin)),
