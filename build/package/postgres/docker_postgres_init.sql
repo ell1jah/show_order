@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS delivery (
     city    VARCHAR(255),
     address VARCHAR(255),
     region  VARCHAR(255),
-    email   VARCHAR(255),
+    email   VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS payment (
