@@ -24,9 +24,9 @@ func main() {
 	logger := zap.Must(zap.NewDevelopment())
 	sugaredLogger := logger.Sugar()
 
-	config, err := config.ParseWithFile("./configs/configs.yml")
+	config, err := config.Parse()
 	if err != nil {
-		sugaredLogger.Fatalf("error parse config: %w", err)
+		sugaredLogger.Fatalf("error parse config: %s", err)
 	}
 	sugaredLogger.Info("config was loaded")
 
@@ -40,7 +40,7 @@ func main() {
 	)
 	db, err := gorm.Open(postgres.Open(params), &gorm.Config{})
 	if err != nil {
-		sugaredLogger.Fatalf("error connect to db: %w", err)
+		sugaredLogger.Fatalf("error connect to db: %s", err)
 	}
 	sugaredLogger.Info("db was connected")
 
@@ -52,7 +52,7 @@ func main() {
 	natsServ := stan.NewStanManager(orderLogic, logger, config)
 	err = natsServ.Run()
 	if err != nil {
-		sugaredLogger.Fatalf("error run nats: %w", err)
+		sugaredLogger.Fatalf("error run nats: %s", err)
 	}
 	sugaredLogger.Info("nats was runned")
 	defer natsServ.Stop()

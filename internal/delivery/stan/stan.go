@@ -20,7 +20,7 @@ type StanManager interface {
 type stanManager struct {
 	logic  logic.Logic
 	conn   stan.Conn
-	logger zap.Logger
+	logger *zap.Logger
 	cfg    *config.Config
 }
 
