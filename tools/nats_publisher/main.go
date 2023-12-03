@@ -59,6 +59,12 @@ const order = `{
 
 func main() {
 	conn, err := stan.Connect("wb_stan_cluster", "publisher_tool", stan.NatsURL(stan.DefaultNatsURL))
+	defer func() {
+		err = conn.Close()
+		if err != nil {
+			fmt.Printf("failed close connection: %s", err)
+		}
+	}()
 	if err != nil {
 		fmt.Println(err)
 		return
