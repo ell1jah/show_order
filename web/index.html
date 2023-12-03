@@ -44,7 +44,18 @@
       orderDetailsDiv.innerHTML = "";
 
       for (const [key, value] of Object.entries(orderData)) {
-        if (typeof value === "object") {
+        if (key === "items") {
+          orderDetailsDiv.innerHTML += `<h2>${key}</h2>`;
+          orderDetailsDiv.innerHTML += "<ul>";
+          value.forEach(item => {
+            orderDetailsDiv.innerHTML += "<li>";
+            for (const [itemKey, itemValue] of Object.entries(item)) {
+              orderDetailsDiv.innerHTML += `<p><strong>${itemKey}:</strong> ${itemValue}</p>`;
+            }
+            orderDetailsDiv.innerHTML += "</li>";
+          });
+          orderDetailsDiv.innerHTML += "</ul>";
+        } else if (typeof value === "object") {
           orderDetailsDiv.innerHTML += `<h2>${key}</h2>`;
           for (const [nestedKey, nestedValue] of Object.entries(value)) {
             orderDetailsDiv.innerHTML += `<p><strong>${nestedKey}:</strong> ${nestedValue}</p>`;
