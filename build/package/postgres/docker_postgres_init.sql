@@ -1,5 +1,21 @@
-CREATE TABLE IF NOT EXISTS delivery (
+CREATE TABLE IF NOT EXISTS orders (
+    id                 SERIAL PRIMARY KEY,
+    order_uid          VARCHAR(255) UNIQUE,
+    track_number       VARCHAR(255),
+    entry              VARCHAR(255),
+    locale             VARCHAR(255),
+    internal_signature VARCHAR(255),
+    customer_id        VARCHAR(255),
+    delivery_service   VARCHAR(255),
+    shardkey           VARCHAR(255),
+    sm_id              INTEGER,
+    date_created       TIMESTAMP,
+    oof_shard          VARCHAR(255)
+);
+
+CREATE TABLE IF NOT EXISTS deliveries (
     id      SERIAL PRIMARY KEY,
+    order_id INTEGER REFERENCES orders (id),
     name    VARCHAR(255),
     phone   VARCHAR(20),
     zip     VARCHAR(10),
@@ -9,8 +25,9 @@ CREATE TABLE IF NOT EXISTS delivery (
     email   VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS payment (
+CREATE TABLE IF NOT EXISTS payments (
     id      SERIAL PRIMARY KEY,
+    order_id INTEGER REFERENCES orders (id),
     transaction  VARCHAR(255),
     request_id   VARCHAR(255),
     currency     VARCHAR(10),
@@ -23,25 +40,9 @@ CREATE TABLE IF NOT EXISTS payment (
     custom_fee    INTEGER
 );
 
-CREATE TABLE IF NOT EXISTS public.order (
-    order_uid          VARCHAR(255) PRIMARY KEY,
-    track_number       VARCHAR(255),
-    entry              VARCHAR(255),
-    locale             VARCHAR(255),
-    internal_signature VARCHAR(255),
-    customer_id        VARCHAR(255),
-    delivery_service   VARCHAR(255),
-    shardkey           VARCHAR(255),
-    sm_id              INTEGER,
-    date_created       TIMESTAMP,
-    oof_shard          VARCHAR(255),
-    delivery_id        INTEGER REFERENCES delivery(id),
-    payment_id         INTEGER REFERENCES payment(id)
-);
-
-CREATE TABLE IF NOT EXISTS item (
-    id           SERIAL PRIMARY KEY,
-    order_uid    VARCHAR(255) REFERENCES public.order(order_uid),
+CREATE TABLE IF NOT EXISTS items (
+    id      SERIAL PRIMARY KEY,
+    order_id INTEGER REFERENCES orders (id),
     chrt_id      INTEGER,
     track_number VARCHAR(255),
     price        INTEGER,

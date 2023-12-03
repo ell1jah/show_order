@@ -30,7 +30,7 @@ func (or *orderRepository) Create(order *model.Order) error {
 
 func (or *orderRepository) GetAll() ([]model.Order, error) {
 	var orders []model.Order
-	err := or.db.Preload("delivery").Preload("payment").Preload("items").Find(&orders).Error
+	err := or.db.Preload("Delivery").Preload("Payment").Preload("Items").Find(&orders).Error
 	if err != nil {
 		return nil, errors.Wrap(err, "database error")
 	}

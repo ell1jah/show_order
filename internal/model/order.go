@@ -3,7 +3,8 @@ package model
 import "time"
 
 type Order struct {
-	OrderUID          string    `json:"order_uid"`
+	ID                int       `json:"-" gorm:"primaryKey"`
+	OrderUID          string    `json:"order_uid" gorm:"unique"`
 	TrackNumber       string    `json:"track_number"`
 	Entry             string    `json:"entry"`
 	Locale            string    `json:"locale"`
