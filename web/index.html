@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Information</title>
+</head>
+<body>
+
+  <h1>Order Information</h1>
+
+  <form id="orderForm">
+    <label for="orderID">Enter Order ID:</label>
+    <input type="text" id="orderID" name="orderID" required>
+    <button type="button" onclick="getOrder()">Get Order</button>
+  </form>
+
+  <div id="orderDetails">
+  </div>
+
+  <script>
+    async function getOrder() {
+      const orderID = document.getElementById("orderID").value;
+      const url = `http://localhost:8080/orders/${orderID}`;
+
+      try {
+        const response = await fetch(url, { method: "GET" });
+
+        if (response.status === 404) {
+          throw new Error("Order not found. Please check the order ID.");
+        }
+
+        const orderData = await response.json();
+
+        displayOrderDetails(orderData);
+      } catch (error) {
+        console.error("Error fetching order:", error);
+        displayErrorMessage(error.message);
+      }
+    }
+
+    function displayOrderDetails(orderData) {
+      const orderDetailsDiv = document.getElementById("orderDetails");
+      orderDetailsDiv.innerHTML = "";
+
+      for (const [key, value] of Object.entries(orderData)) {
+        if (key === "items") {
+          orderDetailsDiv.innerHTML += `<h2>${key}</h2>`;
+          orderDetailsDiv.innerHTML += "<ul>";
+          value.forEach(item => {
+            orderDetailsDiv.innerHTML += "<li>";
+            for (const [itemKey, itemValue] of Object.entries(item)) {
+              orderDetailsDiv.innerHTML += `<p><strong>${itemKey}:</strong> ${itemValue}</p>`;
+            }
+            orderDetailsDiv.innerHTML += "</li>";
+          });
+          orderDetailsDiv.innerHTML += "</ul>";
+        } else if (typeof value === "object") {
+          orderDetailsDiv.innerHTML += `<h2>${key}</h2>`;
+          for (const [nestedKey, nestedValue] of Object.entries(value)) {
+            orderDetailsDiv.innerHTML += `<p><strong>${nestedKey}:</strong> ${nestedValue}</p>`;
+          }
+        } else {
+          orderDetailsDiv.innerHTML += `<p><strong>${key}:</strong> ${value}</p>`;
+        }
+      }
+    }
+
+    function displayErrorMessage(message) {
+      const orderDetailsDiv = document.getElementById("orderDetails");
+      orderDetailsDiv.innerHTML = `<p style="color: red;">Error: ${message}</p>`;
+    }
+  </script>
+
+</body>
+</html>
