@@ -44,6 +44,14 @@ func main() {
 
 	orderRepo := pgRepo.NewRepository(db)
 	orderCache := inmemory.NewCache()
+	cacheLoad, err := orderRepo.GetAll()
+	if err != nil {
+		sugaredLogger.Errorf("db getAll error: %s", err)
+	}
+	err = orderCache.Load(cacheLoad)
+	if err != nil {
+		sugaredLogger.Errorf("cache load error: %s", err)
+	}
 
 	orderLogic := logic.NewLogic(orderCache, orderRepo)
 
